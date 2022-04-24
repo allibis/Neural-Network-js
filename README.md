@@ -34,7 +34,7 @@
 
 - `input_labels`: (optional) the labels for the input. if they are specified, they must be specified too in the dataset as keys for every element in the dataset, while the values are numbers.
 
-- `output_labels`: (optional) the labels for the output. if specified, they are the possible results for every prediction.
+- `output_labels`: (optional) the labels for the output. if specified, they are the possible results for every prediction. in that case the output will be only one and in the dataset only one target string can be provided.
 
 - `activation`: it's a string or an array of string. in the second case, every element in the array is used for the corresponding layer. the functions implemented are:
     1. sigmoid
@@ -55,5 +55,82 @@
 
 - `lastW`: the index of the last weight array in the `weights` array.
 
+## option object
+
+the options object is a js object with this structure:
+
+```
+const options = 
+{
+    layers: Array, // array of integers
+    learningRate: Number,
+    input_labels: Array, // array of strings, optional
+    input_labels: Array, // array of strings, optional
+    epochs: Integer,
+    batchSize: Integer,
+    activation: String || Array // array of strings, optional, default is sigmoid
+}
+```
+
 ## examples
+
+if the option object looks like this
+
+```
+const options = {
+  layers: [2, 4, 2],
+  learningRate: 0.5,
+  output_labels: ["true", "false"],
+  epochs: 200
+};
+```
+
+a corresponding dataset element could be:
+
+```
+{
+    inputs: [1, 1]
+    target: ["false"]
+}
+```
+
+in this case only one target can be set, so this element would not work:
+
+```
+{
+    ...
+    target: ["true", "false"]
+}
+```
+
+if `output_labels` is unspecified, then the element would be:
+
+```
+{
+    inputs: [1, 1],
+    target: [0]
+}
+```
+
+if `input_labels` is specified, then the dataset element must have a key for every input label, each one holding a number: 
+
+```
+const options = {
+    ...
+    input_labels: ["a", "b", ... , "z"];
+    ...
+}
+```
+
+dataset: 
+
+```
+{
+    a: val_a,
+    b: val_b,
+    ...
+    z: val_z,
+    ...
+}
+```
 
