@@ -1,27 +1,53 @@
 class NeuralNetwork {
   constructor(options) {
+    // nodes per layer, default is a perceptron
     this.layers = options.layers || [2, 1];
-    this.learningRate = options.learningRate || 0.2;
+    // how much the weights are changed during training
+    this.learningRate = options.learningRate || 0.2; 
+    // how the inputs are labeled (optional)
     this.input_labels = options.input_labels || undefined;
-    this.labels = options.labels || undefined;
+    // how the outputs are labeled (optional)
+    this.output_labels = options.output_labels || undefined;
+    // how many times the NN goes through training in a single training execution 
     this.epochs = options.epochs || 1;
+    // splits the training dataset into smaller batch.
+    // if this option is undefined, the NN will use the whole dataset without splitting.
     this.batchSize = options.batchSize;
+    // number or layers (except the output layer)
     this.n_layers = this.layers.length - 1;
 
-    if (options.activation.length < this.n_layers) {
+    // if the output layers are labeled, the it sets the NN on probability mode
+    if(this.output_labels) this.prob_mode = true; 
+
+
+    // if an array of function is provided, every layer will use the corresponding
+    // activation function. if the length of the array doesn't match the number of layers
+    // it will warn the user and use the first one.
+    // if there are typos or invalid options
+    // the functions activation() and d_activation() will use the sigmoid function by default
+
+    if(!options.activation) 
+      this.activation_f = "sigmoid";
+    else if (options.activation.length !== this.n_layers ) {
       console.warn(
         "wrong number of activation functions, using only the first one"
       );
       this.activation_f = options.activation[0];
     } else {
-      this.activation_f = options.activation || "sigmoid";
+      // if the property is just a string, it will set the string, 
+      // otherwise it sets it to the default function (sigmoid)
+      this.activation_f = options.activation;
     }
+    
+
+    // the last piece of code assigns random values between -3 and 3 for every weight and bias
     this.weights = [];
     this.bias = [];
 
     for (let i = 0; i < this.n_layers; i++) {
-      // tmp_w will have rows = (number of input nodes) and
-      // cols = (number of output nodes)
+      // tmp_w will have rows = (number of input nodes) = this.layers[i]
+      // and cols = (number of output nodes) = this.layers[i + 1]
+    
       let tmp_w = math.random([this.layers[i + 1], this.layers[i]], -3, 3);
 
       // tmp_b will have rows = (number of output nodes) and
@@ -34,6 +60,7 @@ class NeuralNetwork {
     this.lastW = this.weights.length - 1;
   }
 
+  // methods to set and change various settings
   setActivation(new_activation) {
     if (new_activation.length < this.n_layers) {
       console.warn(
@@ -48,14 +75,16 @@ class NeuralNetwork {
   setLearningRate(lr) {
     this.learningRate = lr;
   }
-  setLabels(labels) {
-    this.labels = labels;
+  setLabels(output_labels) {
+    this.output_labels = output_labels;
   }
 
   setInputs(inputs) {
     this.inputs = inputs;
   }
 
+  // does all the prediction calculation and returns an array with all the node values
+  // 
   getNodes(input) {
     let nodes = [input];
 
@@ -84,6 +113,26 @@ class NeuralNetwork {
     return nodes;
   }
 
+  calculate(input){
+    // gets last item of getnodes
+    let output = this.getNodes(input)[this.n_layers];
+
+    // converts results in probabilities
+
+    // if there are labels
+    if (this.output_labels) {
+      //gets index of the highest probability
+      let index = output.indexOf(Math.max(...output));
+
+      // gets the label of the max probability
+      let prediction = this.output_labels[index];
+
+      return prediction;
+    }
+
+    return output;
+  }
+
   predict(inputs) {
     let in_nodes = [];
     // if the inputs are labeled creates a vector of numeric inputs
@@ -106,23 +155,7 @@ class NeuralNetwork {
       in_nodes = inputs;
     }
 
-    // gets last item of getnodes
-    let output = this.getNodes(in_nodes)[this.n_layers];
-
-    // converts results in probabilities
-
-    // if there are labels
-    if (this.labels) {
-      //gets index of the highest probability
-      let index = output.indexOf(Math.max(...output));
-
-      // gets the label of the max probability
-      let prediction = this.labels[index];
-
-      return prediction;
-    }
-
-    return output;
+    return this.calculate(in_nodes);
   }
 
   backprops(inputs, target) {
@@ -256,13 +289,13 @@ class NeuralNetwork {
           }
         }
         // creates a vector with the correct answers
-        // 0therwise gives the unlabeled targets from the dataset
-        if (this.labels) {
+        // otherwise gives the unlabeled targets from the dataset
+        if (this.output_labels) {
           target_arr = [];
           // loops through the labels, if the target matches the label
           // then the probability is 1, otherwise is 0
-          for (let j = 0; j < this.labels.length; j++) {
-            if (dataset[i].target == this.labels[j]) {
+          for (let j = 0; j < this.output_labels.length; j++) {
+            if (dataset[i].target == this.output_labels[j]) {
               target_arr.push(1);
             } else {
               target_arr.push(0);
@@ -283,7 +316,7 @@ class NeuralNetwork {
     let totSS = math.zeros(dataset[0].target.length);
     let mean;
 
-    if (!this.labels) {
+    if (!this.output_labels) {
       mean = getAverage(dataset);
     }
     for (let sample of dataset) {
@@ -294,7 +327,7 @@ class NeuralNetwork {
         guess = this.predict(sample.inputs);
       }
       // checks if this.labels is defined
-      if (this.labels) {
+      if (this.output_labels) {
         // just encreases the number of wrong guesses
         if (guess != sample.target) error++;
       } else {
@@ -304,7 +337,7 @@ class NeuralNetwork {
       }
     }
 
-    if (this.labels) {
+    if (this.output_labels) {
       // calculates the percentage of correct guesses
       return (1 - error / dataset.length) * 100;
     } else {
@@ -315,13 +348,14 @@ class NeuralNetwork {
   }
 
   saveState() {
+    // returns an object with all the NN information
     let state = {
       weights: this.weights,
       biases: this.bias,
       learningRate: this.learningRate,
       activation: this.activation_f,
       inputs: this.input_labels,
-      outputs: this.labels,
+      outputs: this.output_labels,
       epochs: this.epochs,
       layers: this.layers
     };
@@ -329,17 +363,19 @@ class NeuralNetwork {
   }
 
   loadState(state) {
+    // loads the information from a state object
     this.weights = state.weights;
     this.bias = state.biases;
     this.learningRate = state.learningRate;
     this.activation_f = state.activation;
     this.input_labels = state.inputs || undefined;
-    this.labels = state.outputs || undefined;
+    this.output_labels = state.outputs || undefined;
     this.epoch = state.epochs;
     this.layers = state.layers;
   }
 
   reset() {
+    // resets everything with random weights and biases
     this.weights = [];
     this.bias = [];
 

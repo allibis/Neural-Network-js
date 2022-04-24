@@ -1,3 +1,5 @@
+/* ACTIVATION FUNCTIONS */
+
 // sigmoid function and its derivative
 // f(x) = 1/1+e^-x
 function sigmoid(x) {
@@ -54,6 +56,9 @@ function softmax(matrix) {
 function d_softmax(matrix) {
   return math.multiply(softmax(matrix), math.subtract(1, softmax(matrix)));
 }
+
+
+/* UTILITIES */
 
 // return a matrix with every element passed through the function
 function activation(matrix, f_name) {
@@ -138,6 +143,7 @@ function transpose(matrix) {
   }
 }
 
+// simple (and maybe inefficient) shuffle function
 function data_shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     let j = Math.floor(Math.random() * (i + 1));

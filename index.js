@@ -1,50 +1,52 @@
+
+// object that holds the NN settings
 let options = {
-  layers: [2, 5, 1],
+  layers: [2, 3, 2],
   learningRate: 1,
   // input_labels: ["first", "second"],
-  // labels: ["true", "false"],
-  activation: ["sigmoid", "sigmoid"],
-  epochs: 1000
+  output_labels: ["true", "false"],
+  // activation: ["sigmoid", "sigmoid"],
+  epochs: 100
 };
 
 let nn;
-let data = [
-  {
-    inputs: [1, 1],
-    target: [0]
-  },
-  {
-    inputs: [0, 0],
-    target: [0]
-  },
-  {
-    inputs: [0, 1],
-    target: [1]
-  },
-  {
-    inputs: [1, 0],
-    target: [1]
-  }
-];
-
 // let data = [
 //   {
 //     inputs: [1, 1],
-//     target: ["false"]
+//     target: [0]
 //   },
 //   {
 //     inputs: [0, 0],
-//     target: ["false"]
+//     target: [0]
 //   },
 //   {
 //     inputs: [0, 1],
-//     target: ["true"]
+//     target: [1]
 //   },
 //   {
 //     inputs: [1, 0],
-//     target: ["true"]
+//     target: [1]
 //   }
 // ];
+
+let data = [
+  {
+    inputs: [1, 1],
+    target: ["false"]
+  },
+  {
+    inputs: [0, 0],
+    target: ["false"]
+  },
+  {
+    inputs: [0, 1],
+    target: ["true"]
+  },
+  {
+    inputs: [1, 0],
+    target: ["true"]
+  }
+];
 
 // let data = [
 //   {
