@@ -1,12 +1,12 @@
 
 // object that holds the NN settings
 let options = {
-  layers: [2, 3, 2],
-  learningRate: 1,
+  layers: [2, 4, 2],
+  learningRate: 0.5,
   // input_labels: ["first", "second"],
   output_labels: ["true", "false"],
   // activation: ["sigmoid", "sigmoid"],
-  epochs: 100
+  epochs: 200
 };
 
 let nn;
@@ -84,24 +84,24 @@ function setup() {
   }
 
   let accuracy = nn.test(dataset);
-  console.log("R² random = " + accuracy);
+  console.log("accuracy random = " + accuracy + "%");
   // console.log("accuracy before = " + accuracy + "%");
 
   nn.train(dataset);
 
   accuracy = nn.test(dataset);
-  console.log("R² trained = " + accuracy);
+  console.log("accuracy trained = " + accuracy + "%");
 
   let state = nn.saveState();
   nn.reset();
 
   accuracy = nn.test(dataset);
-  console.log("R² reset = " + accuracy);
+  console.log("accuracy reset = " + accuracy + "%");
 
   nn.loadState(state);
 
   accuracy = nn.test(dataset);
-  console.log("R² loaded state = " + accuracy);
+  console.log("accuracy loaded state = " + accuracy + "%");
 
   // console.log("accuracy after = " + accuracy + "%");
 }

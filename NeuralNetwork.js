@@ -1,4 +1,6 @@
 class NeuralNetwork {
+  
+
   constructor(options) {
     // nodes per layer, default is a perceptron
     this.layers = options.layers || [2, 1];
@@ -16,29 +18,25 @@ class NeuralNetwork {
     // number or layers (except the output layer)
     this.n_layers = this.layers.length - 1;
 
-    // if the output layers are labeled, the it sets the NN on probability mode
-    if(this.output_labels) this.prob_mode = true; 
-
-
+    
+    
     // if an array of function is provided, every layer will use the corresponding
     // activation function. if the length of the array doesn't match the number of layers
     // it will warn the user and use the first one.
     // if there are typos or invalid options
     // the functions activation() and d_activation() will use the sigmoid function by default
-
+    
     if(!options.activation) 
       this.activation_f = "sigmoid";
-    else if (options.activation.length !== this.n_layers ) {
-      console.warn(
-        "wrong number of activation functions, using only the first one"
-      );
-      this.activation_f = options.activation[0];
-    } else {
+    else {
       // if the property is just a string, it will set the string, 
       // otherwise it sets it to the default function (sigmoid)
       this.activation_f = options.activation;
     }
-    
+      
+    // checks that the options are compatible together.
+    // if something's wrong, it tries to correct it.
+    this.checkOptions();
 
     // the last piece of code assigns random values between -3 and 3 for every weight and bias
     this.weights = [];
@@ -60,27 +58,54 @@ class NeuralNetwork {
     this.lastW = this.weights.length - 1;
   }
 
+  checkOptions(){
+    // checks that input labels (if exist) and number of input nodes are the same
+    if (this.input_labels && this.input_labels.length !== this.layers[0]){ 
+      console.warn("number of input layers and input labels don't match. correcting");
+      this.layers[0] = this.input_labels.length;
+    }
+    // checks that output labels (if exist) and number of output nodes are the same
+    if (this.output_labels.length && this.output_labels.length !== this.layers[this.n_layers]){ 
+      console.warn("number of output layers and output labels don't match. correcting");
+      this.layers[this.n_layers] = this.output_labels.length;
+    }
+    // if activation_f is an array, checks if the array matches the number of layers.
+    if(this.activation_f instanceof Array){
+      // if not enough activation functions are not provided only uses the first one
+      if (this.activation_f.length < this.n_layers) {
+        console.warn("too few activation functions, using only the first one");
+        this.activation_f = this.activation_f[0];
+      }
+      // if there are too many activation functions in the array, it slices it to match
+      // the number of layers
+      if (this.activation_f.length > this.n_layers){
+        console.warn("too many activation functions, deleting the extra ones");
+        this.activation_f.slice(0, this.n_layers);
+      }
+    }
+  }
+
   // methods to set and change various settings
   setActivation(new_activation) {
-    if (new_activation.length < this.n_layers) {
-      console.warn(
-        "wrong number of activation functions, using only the first one"
-      );
-      this.activation_f = new_activation[0];
-    } else {
-      this.activation_f = new_activation || "sigmoid";
+    if(!options.activation) 
+      this.activation_f = "sigmoid";
+    else {
+      // if the property is just a string, it will set the string, 
+      // otherwise it sets it to the default function (sigmoid)
+      this.activation_f = new_activation;
     }
+    this.checkOptions();
   }
 
   setLearningRate(lr) {
     this.learningRate = lr;
   }
-  setLabels(output_labels) {
+  setOutputLabels(output_labels) {
     this.output_labels = output_labels;
   }
 
-  setInputs(inputs) {
-    this.inputs = inputs;
+  setInputLabels(input_labels) {
+    this.input_labels = input_labels;
   }
 
   // does all the prediction calculation and returns an array with all the node values
