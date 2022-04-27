@@ -17,6 +17,8 @@ class NeuralNetwork {
     this.batchSize = options.batchSize;
     // number or layers (except the output layer)
     this.n_layers = this.layers.length - 1;
+    // if debug is true more stuff is printed
+    this.debug = options.debug || false
 
     
     
@@ -65,7 +67,7 @@ class NeuralNetwork {
       this.layers[0] = this.input_labels.length;
     }
     // checks that output labels (if exist) and number of output nodes are the same
-    if (this.output_labels.length && this.output_labels.length !== this.layers[this.n_layers]){ 
+    if (this.output_labels && this.output_labels.length !== this.layers[this.n_layers]){ 
       console.warn("number of output layers and output labels don't match. correcting");
       this.layers[this.n_layers] = this.output_labels.length;
     }
@@ -204,6 +206,8 @@ class NeuralNetwork {
     // calculates the output error
     let err = math.subtract(output, target);
 
+    if(this.debug) console.log("error: " + err);
+
     // gets nodes before output nodes
     let lastnodes = nodes[this.n_layers - 1];
 
@@ -292,6 +296,7 @@ class NeuralNetwork {
     let target_arr = [];
     // divides the datasets in batches
     for (let iter = 0; iter < this.epochs; iter++) {
+      if(this.debug) console.log("epoch: #" + iter);
       for (let i = lasti; i < lasti + size && lasti < dataset.length; i++) {
         // if the inputs are labeled creates a vector of numeric inputs
         // corresponding to the relative labels
@@ -384,6 +389,7 @@ class NeuralNetwork {
       epochs: this.epochs,
       layers: this.layers
     };
+    if(this.debug) console.log("state saved");
     return state;
   }
 
@@ -397,6 +403,7 @@ class NeuralNetwork {
     this.output_labels = state.outputs || undefined;
     this.epoch = state.epochs;
     this.layers = state.layers;
+    if(this.debug) console.log("state loaded");
   }
 
   reset() {
@@ -416,5 +423,6 @@ class NeuralNetwork {
       this.weights.push(tmp_w);
       this.bias.push(tmp_b);
     }
+    if(this.debug) console.log("neural network reset");
   }
 }
