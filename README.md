@@ -24,8 +24,6 @@
 
 - `setOutputLabels(output_labels)`: sets new output label(s).
 
-- `checkOptions`: checks that every properties is consistent (and doesn't generate errors).
-
 ## Properties
 
 - `layers`: it holds the structure of the neural network. it's an array of number, each one is the number of nodes in every layer. the default value is [2, 1] (the Perceptron).
