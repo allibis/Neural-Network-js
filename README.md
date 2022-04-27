@@ -40,6 +40,7 @@
     3. softplus
     4. gaussian
     5. sine
+    6. softmax
 
 - `epochs`: how many times the whole dataset is passed through.
 
@@ -66,7 +67,7 @@ const options =
     input_labels: Array, // array of strings, optional
     epochs: Integer,
     batchSize: Integer,
-    activation: String || Array // array of strings, optional, default is sigmoid
+    activation: String || Array // array of strings, optional, default is ReLU
 }
 ```
 

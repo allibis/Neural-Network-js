@@ -49,11 +49,11 @@ let data = [
 ];
 
 // let data = [
-//   {
-//     first: 1,
-//     second: 1,
-//     target: [0]
-//   },
+  // {
+  //   first: 1,
+  //   second: 1,
+  //   target: [0]
+  // },
 //   {
 //     first: 0,
 //     second: 0,

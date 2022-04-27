@@ -24,10 +24,10 @@ class NeuralNetwork {
     // activation function. if the length of the array doesn't match the number of layers
     // it will warn the user and use the first one.
     // if there are typos or invalid options
-    // the functions activation() and d_activation() will use the sigmoid function by default
+    // the functions activation() and d_activation() will use the ReLU function by default
     
     if(!options.activation) 
-      this.activation_f = "sigmoid";
+      this.activation_f = "relu";
     else {
       // if the property is just a string, it will set the string, 
       // otherwise it sets it to the default function (sigmoid)

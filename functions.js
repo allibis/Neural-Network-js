@@ -72,8 +72,10 @@ function activation(matrix, f_name) {
       return gaussian(value);
     } else if (f_name === "sine") {
       return Math.sin(value);
-    } else {
+    } else if (f_name === "sigmoid"){
       return sigmoid(value);
+    } else {
+      console.error("unknown activation function")
     }
   });
 
@@ -94,7 +96,7 @@ function d_activation(matrix, f_name) {
       return d_gaussian(value);
     } else if (f_name === "sine") {
       return Math.cos(value);
-    } else {
+    } else if (f_name === "sigmoid"){
       return d_sigmoid(value);
     }
   });
