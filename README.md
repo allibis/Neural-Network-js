@@ -1,5 +1,5 @@
 # Neural-Network-js
- Neural Network written in JavaScript with the help of [Daniel Shiffman's videos](https://youtube.com/playlist?list=PLRqwX-V7Uu6aCibgK1PTWWu9by6XFdCfh)
+ Neural Network written in JavaScript 
 
 ## Methods
 - `predict(inputs)`: returns either a number or a string, corresponding to the prediction made from the inputs. the `input` is an array of numbers matching the number of nodes in the first layer.
@@ -133,4 +133,8 @@ dataset:
     ...
 }
 ```
-
+## Resources
+- [Backpropagation](https://towardsdatascience.com/a-10-line-proof-of-back-propagation-5a2cad1032c4)
+- [Daniel Shiffman's Nature of code](https://youtube.com/playlist?list=PLRqwX-V7Uu6aCibgK1PTWWu9by6XFdCfh)
+- [Machine Learning](https://developers.google.com/machine-learning)
+- [3B1B Neural Network](https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi)
