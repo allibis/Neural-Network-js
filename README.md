@@ -26,6 +26,8 @@
 
 - `reset()`: resets the weights and biases.
 
+- `normalize(dataset)`: normalizes the dataset scaling all inputs in a range between 0 and 1.
+
 ## Properties
 
 - `layers`: it holds the structure of the neural network. it's an array of number, each one is the number of nodes in every layer. the default value is [2, 1] (the Perceptron).
@@ -56,6 +58,10 @@
 
 - `lastW`: the index of the last weight array in the `weights` array.
 
+- `min_input` and `max_input`: numbers used to normalize data. the formula used is (input - min_input)/(max_input - min_input).
+
+- `normalize_data`: flag that allows the NN to automatically normalize the data.
+
 ## option object
 
 the options object is a js object with this structure:
@@ -69,7 +75,10 @@ const options =
     input_labels: Array, // array of strings, optional
     epochs: Integer,
     batchSize: Integer,
-    activation: String || Array // array of strings, optional, default is ReLU
+    activation: String || Array, // array of strings, optional, default is ReLU
+    min_input: Number, // smaller input provided, optional
+    max_input: Number, // bigger input provided, optional
+    normalize_data: Bool // if true, the NN will automatically normalize the dataset
 }
 ```
 
